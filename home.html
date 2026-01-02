@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kashish Tours & Travels</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --gold:#facc15;
+  --gold-dark:#d4af37;
+  --dark:#020617;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:#020617;
+}
+
+/* ================= NAVBAR ================= */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:1000;
+  background:rgba(2,6,23,0.9);
+  backdrop-filter:blur(18px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 60px;
+  border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+nav .logo-title{
+  display:flex;
+  align-items:center;
+  gap:12px; /* space between logo and text */
+}
+
+nav .logo-title img{
+  height:40px; /* adjust size as needed */
+  width:auto;
+}
+
+nav h1{
+  color:var(--gold);
+  font-size:24px;
+  letter-spacing:1px;
+}
+
+/* NAV LINKS */
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:35px;
+}
+
+nav ul li a{
+  text-decoration:none;
+  color:#ffffff;
+  font-weight:500;
+  padding:8px 16px;
+  border-radius:22px;
+  transition:.3s;
+}
+
+nav ul li a:hover{
+  background:rgba(250,204,21,0.18);
+  color:var(--gold);
+}
+
+/* ================= WHITE HERO SECTION ================= */
+.hero{
+  min-height:100vh;
+  padding-top:130px;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+/* BUS IMAGE */
+.bus-image{
+  width:90%;
+  max-width:1100px;
+  border-radius:30px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.bus-image img{
+  width:100%;
+  display:block;
+}
+
+/* BOOK BUTTON BELOW IMAGE */
+.book-area{
+  margin-top:40px;
+}
+
+.book-btn{
+  padding:18px 55px;
+  border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:#000;
+  font-size:18px;
+  font-weight:600;
+  border-radius:45px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.book-btn:hover{
+  transform:scale(1.08);
+}
+
+/* ================= FOOTER ================= */
+footer{
+  background:#020617;
+  text-align:center;
+  padding:35px;
+  color:#9ca3af;
+  font-size:14px;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+  nav{
+    padding:15px 25px;
+  }
+  nav ul{
+    gap:18px;
+  }
+  .bus-image{
+    width:95%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo-title">
+    <img src="logo.jpeg" alt="Logo">
+    <h1>Kashish Travels</h1>
+  </div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="routes.html">Routes</a></li>
+    <li><a href="parcel.html">Parcel</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- WHITE MIDDLE SECTION -->
+<section class="hero">
+
+  <!-- BUS IMAGE ONLY -->
+  <div class="bus-image">
+    <img src="bus image.png" alt="Luxury Bus">
+  </div>
+
+  <!-- BOOK BUTTON -->
+  <div class="book-area">
+    <button class="book-btn" onclick="location.href='booking.html'">
+      Book Your Journey
+    </button>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 Kashish Tours & Travels. All Rights Reserved.
+</footer>
+
+</body>
+</html>

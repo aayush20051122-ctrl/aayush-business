@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search Buses | Kashish Travels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#f4f6f8;
+}
+.header{
+  background:#fff;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+.search-box{
+  max-width:950px;
+  margin:30px auto;
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 25px 60px rgba(0,0,0,.12);
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:15px;
+}
+.search-box input, .search-box button{
+  padding:15px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+.search-box button{
+  background:linear-gradient(135deg,#ffd54f,#ffc107);
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+.bus-list{
+  max-width:950px;
+  margin:20px auto;
+}
+.bus-card{
+  background:#fff;
+  padding:20px;
+  margin-bottom:15px;
+  border-radius:16px;
+  box-shadow:0 15px 40px rgba(0,0,0,.12);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.bus-info h3{
+  margin:0;
+}
+.bus-info p{
+  margin:4px 0;
+  color:#555;
+}
+.view-btn{
+  padding:14px 22px;
+  background:linear-gradient(135deg,#ffd54f,#ffc107);
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.no-bus{
+  text-align:center;
+  color:#888;
+  font-size:18px;
+  margin-top:30px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">🚌 Kashish Travels – Search Buses</div>
+
+<div class="search-box">
+  <input id="from" placeholder="From (e.g. Dhule)">
+  <input id="to" placeholder="To (e.g. Pune)">
+  <input type="date" id="date">
+  <button onclick="searchBus()">Search Buses</button>
+</div>
+
+<div class="bus-list" id="busList"></div>
+
+<script>
+// DATABASE: Buses with total seats & price
+const buses = [
+  { name:"Kashish AC Sleeper", seats:36, price:750, route:"DHULE-PUNE" },
+  { name:"Kashish AC Sleeper", seats:36, price:750, route:"PUNE-DHULE" },
+  { name:"Kashish AC Sleeper", seats:36, price:800, route:"DHULE-MUMBAI" },
+  { name:"Kashish AC Sleeper", seats:36, price:800, route:"PUNE-MUMBAI" }
+];
+
+function searchBus(){
+  let from = document.getElementById("from").value.trim().toUpperCase();
+  let to = document.getElementById("to").value.trim().toUpperCase();
+  let date = document.getElementById("date").value;
+  let busList = document.getElementById("busList");
+  busList.innerHTML="";
+
+  if(!from || !to || !date){
+    alert("Please enter From, To and Date");
+    return;
+  }
+
+  let route = from + "-" + to;
+  let found = false;
+
+  buses.forEach(bus=>{
+    if(bus.route === route){
+      found = true;
+
+      // get booked seats for this bus on selected date
+      let bookedSeats = JSON.parse(localStorage.getItem(bus.name+"-"+date)) || [];
+      let availableSeats = bus.seats - bookedSeats.length;
+
+      busList.innerHTML += `
+        <div class="bus-card">
+          <div class="bus-info">
+            <h3>${bus.name}</h3>
+            <p>Route: ${from} → ${to}</p>
+            <p>Total Seats: ${bus.seats} | Available: ${availableSeats}</p>
+            <p>Price per Seat: ₹${bus.price}</p>
+          </div>
+          <button class="view-btn" onclick="openSeats('${from}','${to}','${bus.name}','${bus.price}','${date}')">
+            View Seats
+          </button>
+        </div>
+      `;
+    }
+  });
+
+  if(!found){
+    busList.innerHTML = `<div class="no-bus">No buses available for this route</div>`;
+  }
+}
+
+function openSeats(from,to,busName,price,date){
+  localStorage.setItem("route", from+"-"+to);
+  localStorage.setItem("busName", busName);
+  localStorage.setItem("price", price);
+  localStorage.setItem("busDate", date);
+  window.location.href="seat.html";
+}
+</script>
+</body>
+</html>
