@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -207,17 +206,24 @@ body{
 </div>
 
 <script>
-/* 🔑 DATA FROM search.html */
+/* DATA FROM search.html */
 const busName = localStorage.getItem("busName");
 const route   = localStorage.getItem("route");
 const price   = Number(localStorage.getItem("price"));
 const date    = localStorage.getItem("busDate");
 
+/* ✅ DATE FORMAT FIX */
+function formatDate(inputDate){
+  const d = new Date(inputDate);
+  const options = { day:'2-digit', month:'short', year:'numeric' };
+  return d.toLocaleDateString('en-GB', options);
+}
+
 /* HEADER */
 document.getElementById("headerBus").innerText =
-`${busName} | ${route} | ₹${price} | ${date}`;
+`${busName} | ${route} | ₹${price} | ${formatDate(date)}`;
 
-/* UNIQUE BOOKING KEY (MOST IMPORTANT) */
+/* UNIQUE BOOKING KEY */
 function bookingKey(){
   return busName + "-" + route + "-" + date;
 }
@@ -339,8 +345,9 @@ function downloadPDF(){
   pdf.text("Name: "+receipt.name,20,40);
   pdf.text("Mobile: "+receipt.mobile,20,50);
   pdf.text("Route: "+route,20,60);
-  pdf.text("Seats: "+receipt.seats,20,70);
-  pdf.text("Total Fare: ₹"+receipt.total,20,80);
+  pdf.text("Date: "+formatDate(date),20,70);
+  pdf.text("Seats: "+receipt.seats,20,80);
+  pdf.text("Total Fare: ₹"+receipt.total,20,90);
 
   pdf.save("Ticket.pdf");
 }
