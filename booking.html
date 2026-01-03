@@ -12,7 +12,6 @@ body{
   background:#f4f6f8;
 }
 
-/* HEADER */
 .header{
   background:#fff;
   padding:16px;
@@ -22,7 +21,6 @@ body{
   box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
-/* SEARCH BOX */
 .search-box{
   max-width:950px;
   margin:25px auto;
@@ -50,7 +48,6 @@ body{
   cursor:pointer;
 }
 
-/* BUS LIST */
 .bus-list{
   max-width:950px;
   margin:20px auto;
@@ -69,15 +66,8 @@ body{
   gap:15px;
 }
 
-.bus-info h3{
-  margin:0 0 6px;
-}
-
-.bus-info p{
-  margin:4px 0;
-  color:#555;
-  font-size:14px;
-}
+.bus-info h3{margin:0 0 6px;}
+.bus-info p{margin:4px 0;color:#555;font-size:14px;}
 
 .view-btn{
   padding:14px 24px;
@@ -86,7 +76,6 @@ body{
   border-radius:10px;
   font-weight:700;
   cursor:pointer;
-  white-space:nowrap;
 }
 
 .no-bus{
@@ -96,22 +85,10 @@ body{
   margin-top:30px;
 }
 
-/* 📱 MOBILE FIX */
 @media(max-width:768px){
-
-  .search-box{
-    grid-template-columns:1fr;
-  }
-
-  .bus-card{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .view-btn{
-    width:100%;
-    text-align:center;
-  }
+  .search-box{grid-template-columns:1fr;}
+  .bus-card{flex-direction:column;align-items:flex-start;}
+  .view-btn{width:100%;}
 }
 </style>
 </head>
@@ -130,12 +107,10 @@ body{
 <div class="bus-list" id="busList"></div>
 
 <script>
-// BUS DATABASE
 const buses = [
   { name:"Kashish AC Sleeper", seats:36, price:750, route:"DHULE-PUNE" },
   { name:"Kashish AC Sleeper", seats:36, price:750, route:"PUNE-DHULE" },
-  { name:"Kashish AC Sleeper", seats:36, price:800, route:"DHULE-MUMBAI" },
-  { name:"Kashish AC Sleeper", seats:36, price:800, route:"PUNE-MUMBAI" }
+  { name:"Kashish AC Sleeper", seats:36, price:800, route:"DHULE-MUMBAI" }
 ];
 
 function searchBus(){
@@ -146,7 +121,7 @@ function searchBus(){
   busList.innerHTML = "";
 
   if(!from || !to || !date){
-    alert("Please enter From, To and Date");
+    alert("Please fill all fields");
     return;
   }
 
@@ -157,8 +132,10 @@ function searchBus(){
     if(bus.route === route){
       found = true;
 
+      const bookingKey = bus.name + "-" + bus.route + "-" + date;
       const bookedSeats =
-        JSON.parse(localStorage.getItem(bus.name+"-"+date)) || [];
+        JSON.parse(localStorage.getItem(bookingKey)) || [];
+
       const availableSeats = bus.seats - bookedSeats.length;
 
       busList.innerHTML += `
@@ -167,31 +144,34 @@ function searchBus(){
             <h3>${bus.name}</h3>
             <p>Route: ${from} → ${to}</p>
             <p>Total Seats: ${bus.seats} | Available: ${availableSeats}</p>
-            <p>Price per Seat: ₹${bus.price}</p>
+            <p>Price: ₹${bus.price}</p>
           </div>
           <button class="view-btn"
-            onclick="openSeats('${from}','${to}','${bus.name}','${bus.price}','${date}')">
+            onclick="openSeats('${bus.name}','${bus.route}','${bus.price}','${date}')">
             View Seats
           </button>
-        </div>
-      `;
+        </div>`;
     }
   });
 
   if(!found){
-    busList.innerHTML =
-      `<div class="no-bus">No buses available for this route</div>`;
+    busList.innerHTML = `<div class="no-bus">No buses available</div>`;
   }
 }
 
-function openSeats(from,to,busName,price,date){
-  localStorage.setItem("route", from+"-"+to);
+function openSeats(busName,route,price,date){
+  const bookingKey = busName + "-" + route + "-" + date;
+
   localStorage.setItem("busName", busName);
+  localStorage.setItem("route", route);
   localStorage.setItem("price", price);
-  localStorage.setItem("busDate", date);
-  window.location.href="seat.html";
+  localStorage.setItem("date", date);
+  localStorage.setItem("bookingKey", bookingKey);
+
+  window.location.href = "seat.html";
 }
 </script>
 
 </body>
 </html>
+
