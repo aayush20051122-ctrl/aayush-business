@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kashish Tours & Travels</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -26,124 +25,139 @@ body{
   background:#020617;
 }
 
-/* ================= NAVBAR ================= */
+/* ========== NAVBAR ========== */
 nav{
   position:fixed;
   top:0;
   width:100%;
-  z-index:1000;
-  background:rgba(2,6,23,0.9);
-  backdrop-filter:blur(18px);
+  background:rgba(2,6,23,.95);
+  backdrop-filter:blur(14px);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:18px 60px;
-  border-bottom:1px solid rgba(255,255,255,0.15);
+  padding:14px 22px;
+  z-index:1000;
 }
 
-nav .logo-title{
+.logo{
   display:flex;
   align-items:center;
-  gap:12px; /* space between logo and text */
+  gap:10px;
 }
 
-nav .logo-title img{
-  height:40px; /* adjust size as needed */
-  width:auto;
+.logo img{
+  height:38px;
 }
 
-nav h1{
+.logo span{
   color:var(--gold);
-  font-size:24px;
-  letter-spacing:1px;
+  font-size:20px;
+  font-weight:700;
 }
 
-/* NAV LINKS */
-nav ul{
-  list-style:none;
+/* MENU */
+.menu{
   display:flex;
-  gap:35px;
+  gap:25px;
 }
 
-nav ul li a{
+.menu a{
+  color:#fff;
   text-decoration:none;
-  color:#ffffff;
-  font-weight:500;
-  padding:8px 16px;
-  border-radius:22px;
+  font-size:15px;
+}
+
+/* HAMBURGER */
+.hamburger{
+  display:none;
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+}
+
+/* MOBILE MENU */
+.mobile-menu{
+  position:fixed;
+  top:65px;
+  right:-100%;
+  width:220px;
+  background:#020617;
+  display:flex;
+  flex-direction:column;
+  padding:20px;
+  gap:15px;
   transition:.3s;
 }
 
-nav ul li a:hover{
-  background:rgba(250,204,21,0.18);
-  color:var(--gold);
+.mobile-menu a{
+  color:white;
+  text-decoration:none;
+  font-size:16px;
 }
 
-/* ================= WHITE HERO SECTION ================= */
+.mobile-menu.show{
+  right:0;
+}
+
+/* ========== HERO ========== */
 .hero{
   min-height:100vh;
-  padding-top:130px;
-  background:#ffffff;
+  background:white;
+  padding:120px 16px 60px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
 }
 
-/* BUS IMAGE */
-.bus-image{
-  width:90%;
-  max-width:1100px;
-  border-radius:30px;
-  overflow:hidden;
-  box-shadow:0 30px 80px rgba(0,0,0,.25);
-}
-
-.bus-image img{
+.bus-box{
   width:100%;
+  max-width:1000px;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.bus-box img{
+  width:100%;
+  height:auto;
   display:block;
 }
 
-/* BOOK BUTTON BELOW IMAGE */
-.book-area{
-  margin-top:40px;
-}
-
+/* BUTTON */
 .book-btn{
-  padding:18px 55px;
-  border:none;
+  margin-top:30px;
+  padding:16px 45px;
   background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-  color:#000;
-  font-size:18px;
+  border:none;
+  border-radius:40px;
+  font-size:17px;
   font-weight:600;
-  border-radius:45px;
   cursor:pointer;
-  transition:.3s;
 }
 
-.book-btn:hover{
-  transform:scale(1.08);
-}
-
-/* ================= FOOTER ================= */
+/* FOOTER */
 footer{
   background:#020617;
   text-align:center;
-  padding:35px;
+  padding:25px;
   color:#9ca3af;
-  font-size:14px;
+  font-size:13px;
 }
 
-/* ================= MOBILE ================= */
+/* ========== MOBILE ========== */
 @media(max-width:768px){
-  nav{
-    padding:15px 25px;
+
+  .menu{
+    display:none;
   }
-  nav ul{
-    gap:18px;
+
+  .hamburger{
+    display:block;
   }
-  .bus-image{
-    width:95%;
+
+  .book-btn{
+    width:100%;
+    max-width:320px;
   }
 }
 </style>
@@ -153,40 +167,51 @@ footer{
 
 <!-- NAVBAR -->
 <nav>
-  <div class="logo-title">
-    <img src="logo.jpeg" alt="Logo">
-    <h1>Kashish Travels</h1>
+  <div class="logo">
+    <img src="logo.jpeg">
+    <span>Kashish Travels</span>
   </div>
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="services.html">Services</a></li>
-    <li><a href="routes.html">Routes</a></li>
-    <li><a href="parcel.html">Parcel</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
+
+  <div class="menu">
+    <a href="index.html">Home</a>
+    <a href="services.html">Services</a>
+    <a href="routes.html">Routes</a>
+    <a href="parcel.html">Parcel</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <div class="hamburger" onclick="toggleMenu()">☰</div>
 </nav>
 
-<!-- WHITE MIDDLE SECTION -->
-<section class="hero">
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="routes.html">Routes</a>
+  <a href="parcel.html">Parcel</a>
+  <a href="contact.html">Contact</a>
+</div>
 
-  <!-- BUS IMAGE ONLY -->
-  <div class="bus-image">
+<!-- HERO -->
+<section class="hero">
+  <div class="bus-box">
     <img src="bus image.png" alt="Luxury Bus">
   </div>
 
-  <!-- BOOK BUTTON -->
-  <div class="book-area">
-    <button class="book-btn" onclick="location.href='booking.html'">
-      Book Your Journey
-    </button>
-  </div>
-
+  <button class="book-btn" onclick="location.href='booking.html'">
+    Book Your Journey
+  </button>
 </section>
 
-<!-- FOOTER -->
 <footer>
   © 2026 Kashish Tours & Travels. All Rights Reserved.
 </footer>
+
+<script>
+function toggleMenu(){
+  document.getElementById("mobileMenu").classList.toggle("show");
+}
+</script>
 
 </body>
 </html>
