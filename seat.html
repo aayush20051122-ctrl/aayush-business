@@ -1,97 +1,96 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Seat Booking | Kashish Travels</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Seat Booking</title>
 <style>
-body{margin:0;font-family:'Segoe UI';background:#f5f6f8;}
-.header{
-  background:#fff;padding:14px;text-align:center;
-  font-size:18px;font-weight:600;
+body{font-family:Arial;background:#f5f6f8}
+.header{text-align:center;padding:15px;background:#fff;font-weight:bold}
+.tabs{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.tab{padding:10px 20px;background:#ddd;cursor:pointer}
+.tab.active{background:#ffc107}
+.grid{
+  max-width:700px;margin:20px auto;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:10px
 }
-.layout{
-  max-width:900px;margin:20px auto;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:12px;
-}
-.seat{
-  background:#eee;padding:18px;text-align:center;
-  border-radius:8px;cursor:pointer;font-weight:600;
-}
-.seat.booked{background:#e57373;color:#fff;cursor:not-allowed;}
-.seat.selected{background:#66bb6a;color:#fff;}
-.book-btn{
-  display:block;margin:20px auto;padding:14px 30px;
-  font-weight:700;background:#ffc107;border:none;border-radius:10px;
+.seat{padding:14px;text-align:center;background:#eee;cursor:pointer}
+.booked{background:#e57373;color:#fff;cursor:not-allowed}
+.selected{background:#66bb6a;color:#fff}
+button{
+  display:block;margin:20px auto;padding:12px 30px;
+  background:#ffc107;border:none;font-weight:bold
 }
 </style>
 </head>
 
 <body>
 
-<div class="header" id="header"></div>
-<div class="layout" id="seats"></div>
-<button class="book-btn" onclick="bookSeats()">Confirm Booking</button>
+<div class="header" id="head"></div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showDeck('lower',this)">LOWER</div>
+  <div class="tab" onclick="showDeck('upper',this)">UPPER</div>
+</div>
+
+<div class="grid" id="lower"></div>
+<div class="grid" id="upper" style="display:none"></div>
+
+<button onclick="confirm()">Confirm Booking</button>
 
 <script>
-const TOTAL_SEATS = 36;
+const TOTAL_PER_DECK = 18;
 
-const busName = localStorage.getItem("busName");
-const route   = localStorage.getItem("route");
-const price   = localStorage.getItem("price");
-const rawDate = localStorage.getItem("busDate");
+const name=localStorage.getItem("busName");
+const route=localStorage.getItem("route");
+const price=localStorage.getItem("price");
+const date=localStorage.getItem("busDate");
 
-if(!rawDate){
-  alert("Invalid access. Search again.");
-  window.location.href="search.html";
-}
+const key=()=>`${name}|${route}|${date}`;
 
-function formatDate(d){
-  return new Date(d).toLocaleDateString("en-GB",
-  {day:"2-digit",month:"short",year:"numeric"});
-}
+head.innerText=`${name} | ${route} | ${date} | ₹${price}`;
 
-document.getElementById("header").innerText =
-`${busName} | ${route} | ₹${price} | ${formatDate(rawDate)}`;
+let booked=JSON.parse(localStorage.getItem(key()))||[];
+let selected=[];
 
-function bookingKey(){
-  return busName + "__" + route + "__" + rawDate;
-}
+function draw(deck,start){
+  deck.innerHTML="";
+  for(let i=0;i<TOTAL_PER_DECK;i++){
+    const num=start+i;
+    const s=document.createElement("div");
+    s.innerText=num;
+    s.className="seat";
 
-let booked = JSON.parse(localStorage.getItem(bookingKey())) || [];
-let selected = [];
-const seatsDiv = document.getElementById("seats");
+    if(booked.includes(num)) s.classList.add("booked");
 
-for(let i=1;i<=TOTAL_SEATS;i++){
-  const seat=document.createElement("div");
-  seat.innerText=i;
-  seat.className="seat";
-
-  if(booked.includes(i)){
-    seat.classList.add("booked");
+    s.onclick=()=>{
+      if(s.classList.contains("booked"))return;
+      s.classList.toggle("selected");
+      selected.includes(num)
+        ? selected=selected.filter(x=>x!==num)
+        : selected.push(num);
+    };
+    deck.appendChild(s);
   }
-
-  seat.onclick=()=>{
-    if(seat.classList.contains("booked")) return;
-    seat.classList.toggle("selected");
-    if(selected.includes(i))
-      selected=selected.filter(x=>x!==i);
-    else
-      selected.push(i);
-  };
-  seatsDiv.appendChild(seat);
 }
 
-function bookSeats(){
-  if(selected.length===0){
-    alert("Seat select karo");
-    return;
-  }
-  booked = booked.concat(selected);
-  localStorage.setItem(bookingKey(), JSON.stringify(booked));
-  alert("Booking Successful!");
-  window.location.href="search.html"; // 🔥 back to search
+draw(lower,1);      // Lower: 1–18
+draw(upper,19);    // Upper: 19–36
+
+function showDeck(id,btn){
+  lower.style.display=id==="lower"?"grid":"none";
+  upper.style.display=id==="upper"?"grid":"none";
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function confirm(){
+  if(selected.length===0){alert("Select seat");return;}
+  booked=booked.concat(selected);
+  localStorage.setItem(key(),JSON.stringify(booked));
+  alert("Booking Successful");
+  location.href="search.html";
 }
 </script>
 
