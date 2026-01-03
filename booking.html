@@ -1,129 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Search Buses | Kashish Travels</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Search Bus</title>
 <style>
-body{margin:0;font-family:'Segoe UI',sans-serif;background:#f4f6f8;}
-.header{
-  background:#fff;padding:16px;text-align:center;
-  font-size:22px;font-weight:700;
-  box-shadow:0 4px 15px rgba(0,0,0,.08);
-}
-.search-box{
-  max-width:900px;margin:25px auto;background:#fff;
-  padding:20px;border-radius:16px;
-  box-shadow:0 20px 50px rgba(0,0,0,.12);
-  display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;
-}
-.search-box input,.search-box button{
-  padding:14px;border-radius:10px;border:1px solid #ccc;font-size:15px;
-}
-.search-box button{
-  background:#ffc107;border:none;font-weight:700;cursor:pointer;
-}
-.bus-card{
-  max-width:900px;margin:15px auto;background:#fff;
-  padding:16px;border-radius:14px;
-  box-shadow:0 15px 35px rgba(0,0,0,.12);
-  display:flex;justify-content:space-between;align-items:center;
-}
-.view-btn{
-  padding:12px 22px;background:#ffc107;border:none;
-  border-radius:10px;font-weight:700;cursor:pointer;
-}
-@media(max-width:768px){
-  .search-box{grid-template-columns:1fr;}
-  .bus-card{flex-direction:column;gap:10px;}
-  .view-btn{width:100%;}
-}
+body{font-family:Arial;background:#f4f6f8}
+.box{max-width:900px;margin:20px auto;background:#fff;padding:20px;border-radius:10px}
+.bus{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:15px;border:1px solid #ddd}
+button{padding:10px 22px;background:#ffc107;border:none;font-weight:bold;cursor:pointer}
 </style>
 </head>
 
 <body>
 
-<div class="header">🚌 Kashish Travels – Search Buses</div>
-
-<div class="search-box">
-  <input id="from" placeholder="From (e.g. Dhule)">
-  <input id="to" placeholder="To (e.g. Pune)">
-  <input type="date" id="date">
-  <button onclick="searchBus()">Search</button>
+<div class="box">
+  <h2>Search Bus</h2>
+  <input id="from" placeholder="From">
+  <input id="to" placeholder="To">
+  <input id="date" type="date">
+  <button onclick="search()">Search</button>
 </div>
 
-<div id="busList"></div>
+<div id="result" class="box"></div>
 
 <script>
 const TOTAL_SEATS = 36;
 
-const buses = [
-  {name:"Kashish AC Sleeper", price:750, route:"DHULE-PUNE"},
-  {name:"Kashish AC Sleeper", price:750, route:"PUNE-DHULE"}
+const buses=[
+  {name:"Kashish AC Sleeper",route:"DHULE-PUNE",price:750},
+  {name:"Kashish AC Sleeper",route:"PUNE-DHULE",price:750}
 ];
 
-function bookingKey(busName, route, date){
-  return busName + "__" + route + "__" + date;
-}
+const key=(n,r,d)=>`${n}|${r}|${d}`;
 
-function getAvailableSeats(busName, route, date){
-  const key = bookingKey(busName, route, date);
-  const booked = JSON.parse(localStorage.getItem(key)) || [];
-  return TOTAL_SEATS - booked.length;
-}
+function search(){
+  const from=fromEl().value.toUpperCase();
+  const to=toEl().value.toUpperCase();
+  const date=dateEl().value;
+  const route=from+"-"+to;
+  result.innerHTML="";
 
-function searchBus(){
-  const from = document.getElementById("from").value.trim().toUpperCase();
-  const to   = document.getElementById("to").value.trim().toUpperCase();
-  const date = document.getElementById("date").value;
-  const busList = document.getElementById("busList");
-  busList.innerHTML="";
+  buses.forEach(b=>{
+    if(b.route===route){
+      const booked=JSON.parse(localStorage.getItem(key(b.name,route,date)))||[];
+      const available=TOTAL_SEATS-booked.length;
 
-  if(!from || !to || !date){
-    alert("From, To aur Date bharo");
-    return;
-  }
-
-  const route = from + "-" + to;
-  let found=false;
-
-  buses.forEach(bus=>{
-    if(bus.route === route){
-      found=true;
-      const available = getAvailableSeats(bus.name, route, date);
-
-      busList.innerHTML += `
-        <div class="bus-card">
-          <div>
-            <h3>${bus.name}</h3>
-            <p>Route: ${route}</p>
-            <p>Price: ₹${bus.price}</p>
-            <p><b>Available Seats: ${available}</b></p>
-          </div>
-          <button class="view-btn"
-            onclick="openSeats('${bus.name}','${route}','${bus.price}','${date}')">
-            View Seats
-          </button>
-        </div>`;
+      result.innerHTML+=`
+      <div class="bus">
+        <div>
+          <b>${b.name}</b><br>
+          Route: ${route}<br>
+          Date: ${date}<br>
+          Available Seats: <b>${available}</b>
+        </div>
+        <button onclick="openSeats('${b.name}','${route}','${b.price}','${date}')">
+          View Seats
+        </button>
+      </div>`;
     }
   });
-
-  if(!found){
-    busList.innerHTML="<p style='text-align:center'>No buses available</p>";
-  }
 }
 
-function openSeats(busName, route, price, date){
-  localStorage.setItem("busName", busName);
-  localStorage.setItem("route", route);
-  localStorage.setItem("price", price);
-  localStorage.setItem("busDate", date);
-  window.location.href="seat.html";
+function openSeats(n,r,p,d){
+  localStorage.setItem("busName",n);
+  localStorage.setItem("route",r);
+  localStorage.setItem("price",p);
+  localStorage.setItem("busDate",d);
+  location.href="seat.html";
 }
+
+const fromEl=()=>document.getElementById("from");
+const toEl=()=>document.getElementById("to");
+const dateEl=()=>document.getElementById("date");
 </script>
 
 </body>
 </html>
+
 
 
