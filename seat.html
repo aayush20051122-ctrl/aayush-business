@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -206,21 +207,22 @@ body{
 </div>
 
 <script>
-const selected = [];
-
-// Demo data (normally previous page se aata)
-localStorage.setItem("busName","Kashish Travels Sleeper");
-localStorage.setItem("price","800");
-localStorage.setItem("busDate","10 Jan 2026");
-
+/* 🔑 DATA FROM search.html */
 const busName = localStorage.getItem("busName");
-const price = Number(localStorage.getItem("price"));
-const date = localStorage.getItem("busDate");
+const route   = localStorage.getItem("route");
+const price   = Number(localStorage.getItem("price"));
+const date    = localStorage.getItem("busDate");
 
+/* HEADER */
 document.getElementById("headerBus").innerText =
-`${busName} | ₹${price} | ${date}`;
+`${busName} | ${route} | ₹${price} | ${date}`;
 
-// 🔴 SEAT-WISE PRICE (yahi change karna future me)
+/* UNIQUE BOOKING KEY (MOST IMPORTANT) */
+function bookingKey(){
+  return busName + "-" + route + "-" + date;
+}
+
+/* SEAT PRICE LOGIC */
 const seatPrices = {
   "Lower-1":900,"Lower-2":900,"Lower-3":850,
   "Lower-4":800,"Lower-5":800,
@@ -228,21 +230,20 @@ const seatPrices = {
 };
 
 const defaultPrice = price;
-
-function key(){ return busName+"-"+date; }
+let selected = [];
 
 function getBooked(){
-  return JSON.parse(localStorage.getItem(key())) || [];
+  return JSON.parse(localStorage.getItem(bookingKey())) || [];
 }
 
 function updateAvailable(){
   document.getElementById("availableSeats").innerText =
-  "Available Seats: "+(36-getBooked().length);
+  "Available Seats: " + (36 - getBooked().length);
 }
 
 function generate(layout,start,deck){
   layout.innerHTML="";
-  let booked=getBooked();
+  let booked = getBooked();
 
   for(let i=0;i<18;i++){
     let seat=document.createElement("div");
@@ -266,9 +267,8 @@ function generate(layout,start,deck){
         else
           selected.splice(selected.indexOf(label),1);
 
-        let total = selected.reduce((sum,s)=>{
-          return sum + (seatPrices[s] || defaultPrice);
-        },0);
+        let total = selected.reduce((sum,s)=>
+          sum + (seatPrices[s] || defaultPrice),0);
 
         document.getElementById("fare").innerText =
         "Total Fare: ₹"+total;
@@ -290,8 +290,8 @@ function switchDeck(id,btn){
 }
 
 function openForm(){
-  if(selected.length==0){
-    alert("Select seats");
+  if(selected.length===0){
+    alert("Select seats first");
     return;
   }
   modal.style.display="flex";
@@ -303,17 +303,16 @@ function confirmBooking(){
   let n=pname.value.trim();
   let m=pmobile.value.trim();
 
-  if(!n||m.length!=10){
+  if(!n || m.length!==10){
     alert("Invalid details");
     return;
   }
 
-  let booked=getBooked().concat(selected);
-  localStorage.setItem(key(),JSON.stringify(booked));
+  let booked = getBooked().concat(selected);
+  localStorage.setItem(bookingKey(), JSON.stringify(booked));
 
-  let total = selected.reduce((sum,s)=>{
-    return sum + (seatPrices[s] || defaultPrice);
-  },0);
+  let total = selected.reduce((sum,s)=>
+    sum + (seatPrices[s] || defaultPrice),0);
 
   receipt={
     id:"KT"+Date.now(),
@@ -325,7 +324,7 @@ function confirmBooking(){
 
   form.style.display="none";
   success.style.display="block";
-  selected.length=0;
+  selected=[];
 
   generate(lowerLayout,1,"Lower");
   generate(upperLayout,19,"Upper");
@@ -339,8 +338,9 @@ function downloadPDF(){
   pdf.text("Booking ID: "+receipt.id,20,30);
   pdf.text("Name: "+receipt.name,20,40);
   pdf.text("Mobile: "+receipt.mobile,20,50);
-  pdf.text("Seats: "+receipt.seats,20,60);
-  pdf.text("Total Fare: ₹"+receipt.total,20,70);
+  pdf.text("Route: "+route,20,60);
+  pdf.text("Seats: "+receipt.seats,20,70);
+  pdf.text("Total Fare: ₹"+receipt.total,20,80);
 
   pdf.save("Ticket.pdf");
 }
@@ -348,4 +348,3 @@ function downloadPDF(){
 
 </body>
 </html>
-
