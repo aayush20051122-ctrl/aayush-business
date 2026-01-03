@@ -11,74 +11,111 @@ body{
   font-family:'Segoe UI',sans-serif;
   background:#f4f6f8;
 }
+
+/* HEADER */
 .header{
   background:#fff;
-  padding:15px;
+  padding:16px;
   text-align:center;
   font-size:22px;
   font-weight:700;
   box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
+
+/* SEARCH BOX */
 .search-box{
   max-width:950px;
-  margin:30px auto;
+  margin:25px auto;
   background:#fff;
-  padding:25px;
-  border-radius:18px;
-  box-shadow:0 25px 60px rgba(0,0,0,.12);
+  padding:22px;
+  border-radius:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.12);
   display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr;
-  gap:15px;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:14px;
 }
-.search-box input, .search-box button{
-  padding:15px;
+
+.search-box input,
+.search-box button{
+  padding:14px;
   border-radius:10px;
   border:1px solid #ccc;
   font-size:15px;
 }
+
 .search-box button{
   background:linear-gradient(135deg,#ffd54f,#ffc107);
   border:none;
   font-weight:700;
   cursor:pointer;
 }
+
+/* BUS LIST */
 .bus-list{
   max-width:950px;
   margin:20px auto;
+  padding:0 10px;
 }
+
 .bus-card{
   background:#fff;
-  padding:20px;
+  padding:18px;
   margin-bottom:15px;
-  border-radius:16px;
-  box-shadow:0 15px 40px rgba(0,0,0,.12);
+  border-radius:14px;
+  box-shadow:0 15px 35px rgba(0,0,0,.12);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:15px;
 }
+
 .bus-info h3{
-  margin:0;
+  margin:0 0 6px;
 }
+
 .bus-info p{
   margin:4px 0;
   color:#555;
+  font-size:14px;
 }
+
 .view-btn{
-  padding:14px 22px;
+  padding:14px 24px;
   background:linear-gradient(135deg,#ffd54f,#ffc107);
   border:none;
   border-radius:10px;
   font-weight:700;
   cursor:pointer;
+  white-space:nowrap;
 }
+
 .no-bus{
   text-align:center;
   color:#888;
-  font-size:18px;
+  font-size:17px;
   margin-top:30px;
+}
+
+/* 📱 MOBILE FIX */
+@media(max-width:768px){
+
+  .search-box{
+    grid-template-columns:1fr;
+  }
+
+  .bus-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .view-btn{
+    width:100%;
+    text-align:center;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <div class="header">🚌 Kashish Travels – Search Buses</div>
@@ -93,7 +130,7 @@ body{
 <div class="bus-list" id="busList"></div>
 
 <script>
-// DATABASE: Buses with total seats & price
+// BUS DATABASE
 const buses = [
   { name:"Kashish AC Sleeper", seats:36, price:750, route:"DHULE-PUNE" },
   { name:"Kashish AC Sleeper", seats:36, price:750, route:"PUNE-DHULE" },
@@ -102,27 +139,27 @@ const buses = [
 ];
 
 function searchBus(){
-  let from = document.getElementById("from").value.trim().toUpperCase();
-  let to = document.getElementById("to").value.trim().toUpperCase();
-  let date = document.getElementById("date").value;
-  let busList = document.getElementById("busList");
-  busList.innerHTML="";
+  const from = document.getElementById("from").value.trim().toUpperCase();
+  const to = document.getElementById("to").value.trim().toUpperCase();
+  const date = document.getElementById("date").value;
+  const busList = document.getElementById("busList");
+  busList.innerHTML = "";
 
   if(!from || !to || !date){
     alert("Please enter From, To and Date");
     return;
   }
 
-  let route = from + "-" + to;
+  const route = from + "-" + to;
   let found = false;
 
   buses.forEach(bus=>{
     if(bus.route === route){
       found = true;
 
-      // get booked seats for this bus on selected date
-      let bookedSeats = JSON.parse(localStorage.getItem(bus.name+"-"+date)) || [];
-      let availableSeats = bus.seats - bookedSeats.length;
+      const bookedSeats =
+        JSON.parse(localStorage.getItem(bus.name+"-"+date)) || [];
+      const availableSeats = bus.seats - bookedSeats.length;
 
       busList.innerHTML += `
         <div class="bus-card">
@@ -132,7 +169,8 @@ function searchBus(){
             <p>Total Seats: ${bus.seats} | Available: ${availableSeats}</p>
             <p>Price per Seat: ₹${bus.price}</p>
           </div>
-          <button class="view-btn" onclick="openSeats('${from}','${to}','${bus.name}','${bus.price}','${date}')">
+          <button class="view-btn"
+            onclick="openSeats('${from}','${to}','${bus.name}','${bus.price}','${date}')">
             View Seats
           </button>
         </div>
@@ -141,7 +179,8 @@ function searchBus(){
   });
 
   if(!found){
-    busList.innerHTML = `<div class="no-bus">No buses available for this route</div>`;
+    busList.innerHTML =
+      `<div class="no-bus">No buses available for this route</div>`;
   }
 }
 
@@ -153,5 +192,6 @@ function openSeats(from,to,busName,price,date){
   window.location.href="seat.html";
 }
 </script>
+
 </body>
 </html>
